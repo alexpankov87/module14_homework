@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XHRPracticeExample_First</title>
+    <style>
+        .block {
+            display: block;
+            margin: 10px;
+        }
+
+        .block>label {
+            font-size: 18px;
+            font-weight: 600;
+            color: grey;
+        }
+
+        .btn {
+            background: green;
+            padding: 15px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin-top: 10px;
+            line-height: 16px;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            box-shadow: 0px 2px 8px 2px rgba(141, 150, 178, .3);
+            transform: scale(1.05);
+            cursor: pointer;
+        }
+
+        .input {
+            margin-top: 10px;
+            width: 300px;
+            height: 30px;
+            outline-color: green;
+        }
+
+        input::placeholder {
+            color: grey;
+            font-size: 14px;
+            padding: 3px;
+        }
+
+        .result-block {
+            display: flex;
+            flex-wrap: wrap;
+            width: 600px;
+            font-size: 18px;
+            font-weight: 600;
+            color: grey;
+            margin: 10px;
+        }
+
+        .card {
+            width: 200px;
+            margin: 20px;
+        }
+
+        .card-image {
+            display: block;
+            width: 200px;
+            height: 150px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="block">
+        <label for="requestValue">Введите число в диапозоне от 1 до 10</label><br>
+        <input class="input" required type="text" name="requestValue" id="requestValue" placeholder="Введите число"><br>
+        <button class="btn btn-request">Отправить запрос</button>
+    </div>
+    <div class="result-block response-block">Здесь будет результ запроса</div>
+</body>
+<script>
+    const resultNode = document.querySelector('.response-block');
+    const btnNode = document.querySelector('.btn-request');
+    const value = document.querySelector('input').value;
+    const url = 'https://picsum.photos/v2/list/?limit=';
+
+    function checkClaimInput(url) {
+        let inputValue = requestValue.value;
+        // console.log(inputValue);
+        if (1 <= inputValue && inputValue <= 10) {
+            const claim = url + inputValue;
+            requestContent(claim);
+        } else {
+            resultNode.innerHTML = `Число вне диапазона от 1 до 10`
+        }
+    }
+
+    function requestContent(claim) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', claim, true);
+
+        xhr.onload = function () {
+            if (xhr.status !== 200) {
+                console.log('Статус ответа: ', xhr.status);
+            } else if (xhr.onerror) {
+                console.log('Ошибка! Статус ответа: ', xhr.status);
+            } else {
+                const result = JSON.parse(xhr.response);
+                displayResult(result);
+            }
+        };
+        xhr.send();
+    };
+
+    function displayResult(apiData) {
+        let cards = '';
+        apiData.forEach(item => {
+            const cardBlock = `
+      <div class="card">
+        <img
+          src="${item.download_url}"
+          class="card-image"
+        />
+        <p>${item.author}</p>
+      </div>
+    `;
+            cards = cards + cardBlock;
+        });
+
+        resultNode.innerHTML = cards;
+    }
+
+
+    btnNode.addEventListener('click', () => {
+        checkClaimInput(url);
+    })
+</script>
+
+</html>

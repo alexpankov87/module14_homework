@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Задание 4 HTTP_fetch_asyncawait_Practice</title>
+
+    <style>
+        .demo-block {
+            margin: 10px;
+        }
+
+        .input-t {
+            margin: 10px;
+            width: 300px;
+            outline-color: green;
+            height: 30px;
+        }
+
+        label {
+            font-size: 18px;
+            color: grey;
+            font-weight: 700;
+        }
+
+        .result {
+            margin: 20px;
+            width: 500px;
+            height: 500px;
+        }
+
+        .send-request {
+            background: green;
+            font-size: 16px;
+            color: white;
+            padding: 10px;
+            border: none;
+            text-transform: uppercase;
+            transition: 0.3s;
+            border-radius: 5px;
+            margin: 10px;
+        }
+
+        .send-request:hover {
+            box-shadow: 0px 2px 8px 2px rgba(141, 150, 178, .3);
+            transform: scale(1.05);
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <p>
+            Напишите код приложения, который содержит в себе 2 инпута и кнопку, при нажатии происходит следующее:
+        </p>
+        <ul>
+            <li>Если число не совпадает от 100 до 500 — выводить ниже текст «число вне диапазона от 100 до 500»</li>
+            <li>Если число попадает в диапазон от 100 до 500 — сделать запрос c помощью XHR по URL
+                http://placekitten.com/200/300, где get-параметр 320 и 240 — это введённые числа..</li>
+            <li>Пример: если пользователь ввёл 320 и 240, то запрос будет вида http://placekitten.com/200/300.
+            </li>
+        </ul>
+    </div>
+
+    <div class="demo-block">
+        <label for="beforeValue">Введите число диапазона от</label><br>
+        <input class="input-t" type="text" required id="beforeValue" name="beforeValue" placeholder=" 100"><br>
+        <label for="afterValue">до</label><br>
+        <input class="input-t" type="text" required id="afterValue" name="afterValue" placeholder=" 500"
+            type="text"><br>
+        <button class="send-request">Отправить запрос</button>
+        <div class="result">
+            <img id="imgRes" />
+        </div>
+    </div>
+</body>
+<script>
+    const url = `https://placekitten.com/`
+    const btn = document.querySelector('.send-request');
+    const resultBlock = document.querySelector('.result');
+
+    function validationInput(url) {
+        let valueCurrStart = beforeValue.value;
+        let valueCurrEnd = afterValue.value;
+        if (100 <= valueCurrStart && valueCurrEnd <= 500) {
+            const requestUrlParam = url + valueCurrStart + `/` + valueCurrEnd;
+            queryXHR(requestUrlParam);
+        } else {
+            resultBlock.innerHTML = `Число вне диапазона от 100 до 500`;
+        }
+
+    }
+
+    function queryXHR(requestUrlParam) {
+        let xhr = new XMLHttpRequest(),
+            method = "GET";
+        xhr.open(method, requestUrlParam, true);
+
+        xhr.onload = function () {
+            if (xhr.status !== 200) {
+                console.log('Status response: ', xhr.status);
+            } else if (xhr.onerror) {
+                console.log('Error! Status response: ', xhr.status);
+            } else {
+                let result = requestUrlParam;
+                pasteResult(result);
+            }
+        };
+        xhr.send();
+    }
+
+    function pasteResult(result) {
+        console.log(result);
+        document.getElementById("imgRes").src = `${result}`;
+    }
+
+    btn.addEventListener('click', () => {
+        validationInput(url);
+    })
+</script>
+
+</html>
